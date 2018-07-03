@@ -1,0 +1,172 @@
+<html>
+<head>
+    <script src="Scripts/jquery-1.6.4.min.js"></script>
+    <script src="Scripts/jquery.signalR-2.2.0.min.js"></script>
+    <script src="/signalr/hubs"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            var chat = $.connection.Chat;
+            chat.client.broadcastMessage = function (name, message) {
+                var encodedName = $('<div />').text(name).html();
+                var encodedMsg = $('<div />').text(message).html();
+                $('#discussion').append('<li><strong>' + encodedName
+                    + '</strong>:&nbsp;&nbsp;' + encodedMsg + '</li>');
+            };
+
+            $('#displayname').val(prompt('Enter your name:', ''));
+
+            $('#message').focus();
+
+            $.connection.hub.start().done(function () {
+                $('#sendmessage').click(function () {
+                    chat.server.send($('#displayname').val(), $('#message').val());
+                    $('#message').val('').focus();
+                });
+            });
+        });
+    </script>
+
+    <style>
+        body {
+            display:block;
+            position: relative;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            font-size: 1vmax;
+            border: solid 1px red;
+        }
+
+        header {
+            height: 15%;
+        }
+
+        logo {
+            width: 100%;
+            height: 66.6%;
+            float: left;
+            border: solid 1px blue;
+        }
+
+        banner {
+            height: 33.3%;
+            float: left;
+            border: solid 1px blue;
+        }
+
+        userInfo {
+            height: 33.3%;
+            float: right;
+            background-color: gray;
+            border: solid 1px black;
+        }
+
+        gameBody {
+            display: block;
+            width: 100%;
+            height: 85%;
+            border: solid 1px blue;
+        }
+
+        gameTable {
+            height: 100%;
+            width: 49%;
+            float: left;
+            border: solid 1px blue;
+        }
+
+        tableList {
+            display: block;
+            width: 100%;
+            height: 50%;
+            vertical-align: top;
+            border: solid 1px blue;
+        }
+
+        StartedTableList {
+            display: block;
+            width: 100%;
+            height: 50%;
+            vertical-align: bottom;
+            border: solid 1px blue;
+        }
+
+        roomCreator {
+            display: block;
+            float: right;
+            width: 49%;
+            height: 50%;
+            vertical-align: top;
+            border: solid 1px blue;
+        }
+
+        chatBox {
+            display: block;
+            float: right;
+            width: 49%;
+            height: 50%;
+            vertical-align: bottom;
+            border: solid 1px blue;
+        }
+
+        chatList {
+            display: block;
+            width: 100%;
+            height: 90%;
+            vertical-align: top;
+            border: solid 1px blue;
+            overflow-y: scroll;
+        }
+
+        chatCont {
+            display: block;
+            width: 100%;
+            height: 9%;
+            vertical-align: bottom;
+            border: solid 1px red;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <logo>
+            <a href="index.html"><img src="logo.png" height="100%"></a>
+        </logo>
+        <banner>
+            <img src="banner_game_table.png" height="100%">
+        </banner>
+        <userInfo>
+            <img src="user_img.png" height="100%">
+            <input type="text" id="displayname" disabled>
+        </userInfo>
+    </header>
+    <br>
+    <gameBody>
+        <gameTable>
+            <tableList>
+                빈테이블
+            </tableList>
+            <StartedTableList>
+                게임중테이블
+            </StartedTableList>
+        </gameTable>
+        <roomCreator>
+            방만들기
+        </roomCreator>
+        <chatBox>
+            <chatList>
+                <ul id="discussion"></ul>
+            </chatList>
+            <chatCont>
+                <input type="text" id="message" />
+                <input type="button" id="sendmessage" value="Send" />
+                <input type="hidden" id="displayname" />
+            </chatCont>
+
+        </chatBox>
+    </gameBody>
+</body>
+</html>
